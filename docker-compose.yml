@@ -1,0 +1,26 @@
+version: "3"
+
+# More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+services:
+  pihole2:
+    container_name: pihole2
+    image: pihole/pihole:latest
+    # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
+    ports:
+      - "10.10.10.26:53:53"
+      - "10.10.10.26:81:81"
+      - "10.10.10.26:4711:4711"
+    environment:
+      TZ: "America/Phoenix"
+      WEBPASSWORD: "$$B@ckspace1"
+      WEBTHEME: "default-dark"
+      FTLCONF_REPLY_ADDR4: "10.10.10.26"
+      DNSMASQ_USER: "root"
+      PIHOLE_UID: 0
+      WEBPORT: 81
+    volumes:
+      - './etc-pihole/:/etc/pihole'
+      - './etc-dnsmasq.d/:/etc/dnsmasq.d'
+    cap_add:
+      - NET_ADMIN # Recommended but not required (DHCP needs NET_ADMIN)
+    restart: unless-stopped
